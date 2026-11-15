@@ -1,0 +1,20 @@
+/* ================================================================ */
+/* ORDSTSC   CASE-025: driver for the hourly status update.         */
+/*                                                                  */
+/* LAB ONLY: shortens the record wait from the default 60 seconds   */
+/* to 10 seconds so you are not kept waiting. Production would not  */
+/* have this override. A job-scoped override is used so the RPGLE   */
+/* program (running in its own activation group) sees it; CASE-019  */
+/* explains why scope matters.                                      */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDSTSC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Submit:  SBMJOB CMD(CALL PGM(ORDLAB/ORDSTSC)) JOB(ORDSTSB)       */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  OVRDBF     FILE(ORDHDRI1) WAITRCD(10) OVRSCOPE(*JOB)
+  CALL       PGM(ORDSTSB)
+  DLTOVR     FILE(ORDHDRI1) LVL(*JOB)
+
+ENDPGM

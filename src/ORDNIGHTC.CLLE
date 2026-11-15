@@ -1,0 +1,27 @@
+/* ================================================================ */
+/* ORDNIGHTC  Nightly driver                         (CASE-001)     */
+/* Version WITH THE DEFECT: a run mode that does not exactly match  */
+/* 'FULL' silently skips the statement step. Nothing is logged.     */
+/*                                                                  */
+/* Data area ORDCTL holds the run mode: 'FULL' or 'MARGIN'.         */
+/* Needs programs ORDSTMT (CASE-015) and ORDMRGB2 (CASE-004).       */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDNIGHTC) SRCFILE(ORDLAB/QCLSRC)   */
+/*          (LOG defaults to *JOB, so CHGJOB/SBMJOB LOGCLPGM(*YES)  */
+/*          can switch command logging on for a run.)               */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&MODE) TYPE(*CHAR) LEN(10)
+
+  RTVDTAARA  DTAARA(ORDCTL *ALL) RTNVAR(&MODE)
+
+  IF         COND(&MODE *EQ 'FULL') THEN(DO)
+    CLRPFM     FILE(CUSTSTMT)
+    CALL       PGM(ORDSTMT)
+  ENDDO
+
+  CALL       PGM(ORDMRGB2)
+
+ENDPGM

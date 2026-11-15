@@ -1,0 +1,17 @@
+/* ================================================================ */
+/* L030SET   CASE-030 setup: the next-order-number data area,       */
+/*           set to a value that is already in use - as it was      */
+/*           after being copied back from a test library.           */
+/* Compile: CRTBNDCL PGM(ORDLAB/L030SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L030SET                                     */
+/* Cleanup: DLTDTAARA DTAARA(ORDLAB/ORDNXT), delete any order       */
+/*          above 100106 that the lab created (see the case),       */
+/*          then DLTPGM ORDLAB/ORDNEWB and ORDLAB/ORDNEWB2.         */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTDTAARA  DTAARA(ORDLAB/ORDNXT) TYPE(*DEC) LEN(9 0) +
+               VALUE(100104) TEXT('Order Lab - next order number')
+
+ENDPGM

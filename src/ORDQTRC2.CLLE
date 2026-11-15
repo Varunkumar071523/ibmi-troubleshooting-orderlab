@@ -1,0 +1,33 @@
+/* ================================================================ */
+/* ORDQTRC2  Quarter-end statement driver            (CASE-019)     */
+/* CORRECTED version. In production this replaces ORDQTRC.          */
+/*                                                                  */
+/* The override is issued here, in the program that calls ORDSTMT,  */
+/* with an explicit job scope so that ORDSTMT - which runs in its   */
+/* own activation group - is sure to see it. It is deleted again    */
+/* whether ORDSTMT succeeds or fails, so it cannot leak into later  */
+/* work in the same job.                                            */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDQTRC2) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CLRPFM     FILE(ORDLAB/CUSTSTMTQ)
+
+  OVRDBF     FILE(CUSTSTMT) TOFILE(ORDLAB/CUSTSTMTQ) OVRSCOPE(*JOB)
+
+  CALL       PGM(ORDSTMT)
+  MONMSG     MSGID(CPF0000 RNX0000 MCH0000) EXEC(DO)
+    DLTOVR     FILE(CUSTSTMT) LVL(*JOB)
+    SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                 MSGDTA('ORDQTRC2: ORDSTMT failed; see the +
+                 messages above') MSGTYPE(*ESCAPE)
+  ENDDO
+
+  DLTOVR     FILE(CUSTSTMT) LVL(*JOB)
+
+  SNDPGMMSG  MSG('ORDQTRC2: quarter-end statements produced.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

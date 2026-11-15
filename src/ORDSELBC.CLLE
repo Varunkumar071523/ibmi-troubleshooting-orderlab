@@ -1,0 +1,19 @@
+/* ================================================================ */
+/* ORDSELBC  Customer order summary - batch step      (CASE-021)    */
+/* Reads the selection ORDSEL through the library list and writes   */
+/* one summary row to CUSTSTMT.                                     */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDSELBC) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  RUNSQL     SQL('INSERT INTO ORDLAB.CUSTSTMT +
+               SELECT CUSTNO, COUNT(*), CURRENT TIMESTAMP +
+               FROM ORDSEL GROUP BY CUSTNO') +
+               COMMIT(*NONE) NAMING(*SYS)
+
+  SNDPGMMSG  MSG('ORDSELBC: customer summary written.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

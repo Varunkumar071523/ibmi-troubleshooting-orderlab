@@ -1,0 +1,28 @@
+/* ================================================================ */
+/* ORDXSNPC2 Daily exception snapshot                (CASE-002)     */
+/* CORRECTED version. In production this replaces ORDXSNPC.         */
+/*                                                                  */
+/* An empty exception log is a normal (good) day. CPYF reports it   */
+/* as escape CPF2817 with compare data CPF2869. That one case is    */
+/* monitored: the snapshot is cleared so the report shows "no       */
+/* exceptions" instead of yesterday's rows. Any other copy error    */
+/* still ends the job.                                              */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDXSNPC2) SRCFILE(ORDLAB/QCLSRC)   */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CPYF       FROMFILE(ORDEXCP) TOFILE(ORDEXCPS) +
+               MBROPT(*REPLACE) FMTOPT(*MAP)
+  MONMSG     MSGID(CPF2817) CMPDTA(CPF2869) EXEC(DO)
+    CLRPFM     FILE(ORDEXCPS)
+    SNDPGMMSG  MSG('ORDXSNPC2: no exceptions today; snapshot +
+                 cleared.') TOPGMQ(*EXT)
+    RETURN
+  ENDDO
+
+  SNDPGMMSG  MSG('ORDXSNPC2: exception snapshot refreshed.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

@@ -1,0 +1,27 @@
+/* ================================================================ */
+/* ORDHKPC2  Weekly housekeeping                     (CASE-018)     */
+/* CORRECTED version. In production this replaces ORDHKPC.          */
+/*                                                                  */
+/* The file is found through the library list, so the job           */
+/* description decides which environment is cleared. The library   */
+/* actually used is written to the job log before anything is      */
+/* changed.                                                         */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDHKPC2) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+
+  RTVOBJD    OBJ(*LIBL/ORDEXCP) OBJTYPE(*FILE) RTNLIB(&LIB)
+
+  SNDPGMMSG  MSG('ORDHKPC2: clearing ORDEXCP in library ' *CAT +
+               &LIB *TCAT '.') TOPGMQ(*EXT)
+
+  CLRPFM     FILE(&LIB/ORDEXCP)
+
+  SNDPGMMSG  MSG('ORDHKPC2: exception log cleared in ' *CAT +
+               &LIB *TCAT '.') TOPGMQ(*EXT)
+
+ENDPGM

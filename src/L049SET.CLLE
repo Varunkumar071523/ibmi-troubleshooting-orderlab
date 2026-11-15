@@ -1,0 +1,24 @@
+/* ================================================================ */
+/* L049SET   CASE-049/050 setup: two output queues of your own and  */
+/*           a printer file left pointing at the test queue.        */
+/*   ORDUSRQ  stands in for the user's own output queue            */
+/*   ORDTSTQ  the queue the developer used while testing           */
+/*   ORDRPTP  printer file created during testing with             */
+/*            OUTQ(ORDLAB/ORDTSTQ) - the defect                    */
+/* Neither queue has a writer: nothing here ever reaches paper.     */
+/* Compile: CRTBNDCL PGM(ORDLAB/L049SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTOUTQ    OUTQ(ORDLAB/ORDUSRQ) TEXT('Order Lab - user queue')
+  MONMSG     MSGID(CPF0000)
+  CRTOUTQ    OUTQ(ORDLAB/ORDTSTQ) TEXT('Order Lab - test queue')
+  MONMSG     MSGID(CPF0000)
+
+  CRTPRTF    FILE(ORDLAB/ORDRPTP) OUTQ(ORDLAB/ORDTSTQ) +
+               TEXT('Order Lab - customer list report')
+
+  SNDPGMMSG  MSG('L049SET: ORDUSRQ, ORDTSTQ and ORDRPTP created.') +
+               TOPGMQ(*EXT)
+ENDPGM

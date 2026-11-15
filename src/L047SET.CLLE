@@ -1,0 +1,23 @@
+/* ================================================================ */
+/* L047SET   CASE-047 setup: journal ORDHDR so that an SQL program  */
+/*           compiled with the default COMMIT(*CHG) can update it   */
+/*           under commitment control (and keep its row locks).     */
+/*                                                                  */
+/* Needs authority to create a journal and receiver in your library */
+/* (open issue: allowed on PUB400?). Uses the same names as the     */
+/* CASE-032 lab; run L032CLN first if that lab's objects remain.    */
+/* Compile: CRTBNDCL PGM(ORDLAB/L047SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTJRNRCV  JRNRCV(ORDLAB/ORDRCV0001) +
+               TEXT('Order Lab - journal receiver')
+  CRTJRN     JRN(ORDLAB/ORDJRN) JRNRCV(ORDLAB/ORDRCV0001) +
+               TEXT('Order Lab - journal')
+  STRJRNPF   FILE(ORDLAB/ORDHDR) JRN(ORDLAB/ORDJRN) +
+               IMAGES(*BOTH)
+
+  SNDPGMMSG  MSG('L047SET: ORDHDR is now journaled to ORDJRN.') +
+               TOPGMQ(*EXT)
+ENDPGM

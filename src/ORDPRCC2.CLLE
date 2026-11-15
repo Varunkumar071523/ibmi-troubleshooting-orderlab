@@ -1,0 +1,31 @@
+/* ================================================================ */
+/* ORDPRCC2  Price increase driver                   (CASE-032)     */
+/* CORRECTED version. In production this replaces ORDPRCC.          */
+/*                                                                  */
+/* Commits only if ORDPRUP ended without an error; otherwise rolls  */
+/* back and ends the job with a message. Either way, commitment     */
+/* control is ended with no changes left pending.                   */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDPRCC2) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  STRCMTCTL  LCKLVL(*CHG) CMTSCOPE(*JOB)
+
+  CALL       PGM(ORDPRUP)
+  MONMSG     MSGID(CPF0000 RNX0000 MCH0000) EXEC(DO)
+    ROLLBACK
+    ENDCMTCTL
+    SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                 MSGDTA('ORDPRCC2: ORDPRUP failed. All price +
+                 changes were rolled back') MSGTYPE(*ESCAPE)
+  ENDDO
+
+  COMMIT
+  ENDCMTCTL
+
+  SNDPGMMSG  MSG('ORDPRCC2: price increase committed.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

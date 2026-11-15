@@ -1,0 +1,27 @@
+/* ================================================================ */
+/* ORDNIGHTC3 Nightly driver with an error handler    (CASE-035)    */
+/* Version WITH THE DEFECT: the handler sends one generic message   */
+/* to operations and ends the job. The real error is never passed   */
+/* on - it stays only in the job log.                               */
+/*                                                                  */
+/* Needs ORDSTMT (CASE-015) and message queue ORDOPSQ (CASE-005).   */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDNIGHTC3) SRCFILE(ORDLAB/QCLSRC)  */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERROR))
+
+  CLRPFM     FILE(ORDLAB/CUSTSTMT)
+  CALL       PGM(ORDSTMT)
+
+  SNDPGMMSG  MSG('ORDNIGHTC3: nightly statements produced.') +
+               TOPGMQ(*EXT)
+  RETURN
+
+ERROR:
+  SNDMSG     MSG('Nightly job failed.') TOMSGQ(ORDLAB/ORDOPSQ)
+  SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+               MSGDTA('Nightly job failed') MSGTYPE(*ESCAPE)
+
+ENDPGM

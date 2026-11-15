@@ -1,0 +1,26 @@
+/* ================================================================ */
+/* L015SET   CASE-015 setup: create the nightly job description     */
+/*           exactly as the (fictional) operations team built it:   */
+/*           copied from a template whose library list has only     */
+/*           QGPL and QTEMP.                                        */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/L015SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L015SET                                     */
+/* You may instead type the CRTJOBD command directly.               */
+/*                                                                  */
+/* JOBQ: QBATCH is the usual default. If your system requires a     */
+/* different job queue for user batch work, change JOBQ below and   */
+/* record which one you used.                                       */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTJOBD    JOBD(ORDLAB/ORDNIGHTD) +
+               JOBQ(*LIBL/QBATCH) +
+               USER(*RQD) +
+               INQMSGRPY(*RQD) +
+               LOG(4 00 *SECLVL) +
+               INLLIBL(QGPL QTEMP) +
+               TEXT('Order Lab - nightly batch job description')
+
+ENDPGM

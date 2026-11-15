@@ -1,0 +1,17 @@
+/* ================================================================ */
+/* ORDOVRC   Shared "set up the quarter-end files" program          */
+/*                                                   (CASE-019)     */
+/* Version WITH THE DEFECT: the override was moved here from the    */
+/* driver, without OVRSCOPE. Compiled with CRTBNDCL defaults, this  */
+/* program runs in the default activation group, so the override    */
+/* is scoped to THIS program's call level - and is deleted when     */
+/* this program returns to its caller.                              */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDOVRC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  OVRDBF     FILE(CUSTSTMT) TOFILE(ORDLAB/CUSTSTMTQ)
+
+ENDPGM

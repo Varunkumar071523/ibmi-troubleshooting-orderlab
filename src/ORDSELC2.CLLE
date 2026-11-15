@@ -1,0 +1,20 @@
+/* ================================================================ */
+/* ORDSELC2  Customer order summary - menu option     (CASE-021)    */
+/* CORRECTED version. In production this replaces ORDSELC.          */
+/*                                                                  */
+/* Passes the customer number to the batch job and lets the batch   */
+/* job build its own selection. Nothing is left in the interactive  */
+/* job's QTEMP.                                                     */
+/*                                                                  */
+/* Call:     CALL ORDLAB/ORDSELC2 PARM('5001')                      */
+/* Compile:  CRTBNDCL PGM(ORDLAB/ORDSELC2) SRCFILE(ORDLAB/QCLSRC)   */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM        PARM(&CUST)
+
+  DCL        VAR(&CUST) TYPE(*CHAR) LEN(7)
+
+  SBMJOB     CMD(CALL PGM(ORDLAB/ORDSELBC2) PARM(&CUST)) +
+               JOB(ORDSEL)
+
+ENDPGM

@@ -1,0 +1,23 @@
+/* ================================================================ */
+/* ORDVALC   Pre-posting validation driver           (CASE-007)     */
+/* Calls ORDVALB. If an open order has no lines, ends with          */
+/* application message ORD0103 from message file ORDMSGF.           */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDVALC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Submit:  SBMJOB CMD(CALL PGM(ORDLAB/ORDVALC)) JOB(ORDVAL)        */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&BADORD) TYPE(*CHAR) LEN(9)
+
+  CALL       PGM(ORDVALB) PARM(&BADORD)
+
+  IF         COND(&BADORD *NE ' ') THEN(SNDPGMMSG +
+               MSGID(ORD0103) MSGF(ORDMSGF) MSGDTA(&BADORD) +
+               MSGTYPE(*ESCAPE))
+
+  SNDPGMMSG  MSG('ORDVALC: all open orders have lines.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

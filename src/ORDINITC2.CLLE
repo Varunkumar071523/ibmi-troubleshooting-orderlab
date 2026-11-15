@@ -1,0 +1,26 @@
+/* ================================================================ */
+/* ORDINITC2 Make sure the run-mode data area exists (CASE-034)     */
+/* CORRECTED version. In production this replaces ORDINITC.         */
+/*                                                                  */
+/* Monitors CPF9801 - the message CHKOBJ documents for "object not  */
+/* found". Other CHKOBJ errors (library not found, not authorized)  */
+/* are not monitored: they mean something else is wrong, and the    */
+/* job should stop.                                                 */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDINITC2) SRCFILE(ORDLAB/QCLSRC)   */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CHKOBJ     OBJ(ORDLAB/ORDCTL) OBJTYPE(*DTAARA)
+  MONMSG     MSGID(CPF9801) EXEC(DO)
+    CRTDTAARA  DTAARA(ORDLAB/ORDCTL) TYPE(*CHAR) LEN(10) +
+                 VALUE('FULL') TEXT('Order Lab - nightly run mode')
+    SNDPGMMSG  MSG('ORDINITC2: run-mode data area created with +
+                 value FULL.') TOPGMQ(*EXT)
+  ENDDO
+
+  SNDPGMMSG  MSG('ORDINITC2: run-mode data area is in place.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

@@ -1,0 +1,19 @@
+/* ================================================================ */
+/* ORDNOTFC2 Send a note to operations              (CASE-037)      */
+/* CORRECTED version. In production this replaces ORDNOTFC.         */
+/*                                                                  */
+/* The command itself never changes, so there is no reason to build */
+/* it as a string. A CL variable passed as a parameter can contain  */
+/* any characters, apostrophes included.                            */
+/*                                                                  */
+/* Parameter: &TEXT char(60)                                        */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDNOTFC2) SRCFILE(ORDLAB/QCLSRC)   */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM        PARM(&TEXT)
+
+  DCL        VAR(&TEXT) TYPE(*CHAR) LEN(60)
+
+  SNDMSG     MSG(&TEXT) TOMSGQ(ORDLAB/ORDOPSQ)
+
+ENDPGM

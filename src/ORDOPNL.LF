@@ -1,0 +1,7 @@
+     A* ORDOPNL  Orders not yet invoiced             (CASE-031)
+     A* Logical file over ORDHDR, keyed by order number.
+     A* Compile: CRTLF FILE(ORDLAB/ORDOPNL) SRCFILE(ORDLAB/QDDSSRC)
+     A* Status: written, NOT yet compiled on IBM i.
+     A          R ORDHDRR                   PFILE(ORDHDR)
+     A          K ORDNO
+     A          S ORDSTS                    VALUES('O' 'P' 'S')

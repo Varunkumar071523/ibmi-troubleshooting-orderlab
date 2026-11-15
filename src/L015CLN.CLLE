@@ -1,0 +1,19 @@
+/* ================================================================ */
+/* L015CLN   CASE-015 cleanup: remove the case objects and output.  */
+/* Compile: CRTBNDCL PGM(ORDLAB/L015CLN) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L015CLN                                     */
+/* Afterwards delete L015SET, L015RUN and L015CLN programs if you   */
+/* compiled them. Spooled job logs are removed with WRKSPLF.        */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DLTJOBD    JOBD(ORDLAB/ORDNIGHTD)
+  MONMSG     MSGID(CPF2105)      /* not found: already removed */
+
+  DLTPGM     PGM(ORDLAB/ORDSTMT)
+  MONMSG     MSGID(CPF2105)
+
+  RUNSQL     SQL('DELETE FROM ORDLAB.CUSTSTMT') COMMIT(*NONE)
+
+ENDPGM

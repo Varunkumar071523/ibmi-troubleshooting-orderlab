@@ -1,0 +1,10 @@
+     A* ORDRCV    Goods received from suppliers        (CASE-040)
+     A* DDS physical file. Numeric data is NOT checked when records
+     A* are written, so CPYF FMTOPT(*NOCHK) can load invalid packed
+     A* data into RCVQTY and RCVCOST.
+     A* Create: CRTPF FILE(ORDLAB/ORDRCV) SRCFILE(ORDLAB/QDDSSRC)
+     A* Status: written, NOT yet compiled or executed on IBM i.
+     A          R ORDRCVR                   TEXT('Goods received')
+     A            RCVITEM       10A         TEXT('Item number')
+     A            RCVQTY         7P 0       TEXT('Quantity received')
+     A            RCVCOST        9P 2       TEXT('Unit cost')

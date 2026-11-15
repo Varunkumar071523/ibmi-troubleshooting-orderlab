@@ -1,0 +1,21 @@
+/* ================================================================ */
+/* ORDXSNPC  Daily exception snapshot               (CASE-002/003)  */
+/* Copies today's exception log (ORDEXCP) into the snapshot table   */
+/* (ORDEXCPS) that the morning report reads.                        */
+/*                                                                  */
+/* Version WITH THE DEFECT: on a day with no exceptions, CPYF       */
+/* skips the empty member and ends with an escape message, which    */
+/* nothing monitors. Yesterday's rows stay in the snapshot.         */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDXSNPC) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CPYF       FROMFILE(ORDEXCP) TOFILE(ORDEXCPS) +
+               MBROPT(*REPLACE) FMTOPT(*MAP)
+
+  SNDPGMMSG  MSG('ORDXSNPC: exception snapshot refreshed.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

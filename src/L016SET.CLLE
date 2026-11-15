@@ -1,0 +1,26 @@
+/* ================================================================ */
+/* L016SET   CASE-016 setup: a test library with a stale copy of    */
+/*           CUSTMAST (two customers only), placed ahead of ORDLAB  */
+/*           in YOUR library list, as it was in the user's.          */
+/*                                                                  */
+/* If your system does not let you create a library, use the QTEMP  */
+/* alternative described in the case's lab section instead.         */
+/* Compile: CRTBNDCL PGM(ORDLAB/L016SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L016SET                                     */
+/* Note: ADDLIBLE changes only the library list of the job that     */
+/* runs it, i.e. your interactive session.                          */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTLIB     LIB(ORDLABT) TEXT('Order Lab - old UAT test library')
+
+  CRTDUPOBJ  OBJ(CUSTMAST) FROMLIB(ORDLAB) OBJTYPE(*FILE) +
+               TOLIB(ORDLABT) DATA(*YES)
+
+  RUNSQL     SQL('DELETE FROM ORDLABT.CUSTMAST WHERE CUSTNO > 5002') +
+               COMMIT(*NONE)
+
+  ADDLIBLE   LIB(ORDLABT) POSITION(*BEFORE ORDLAB)
+
+ENDPGM

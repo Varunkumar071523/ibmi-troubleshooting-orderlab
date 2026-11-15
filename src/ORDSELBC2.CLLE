@@ -1,0 +1,26 @@
+/* ================================================================ */
+/* ORDSELBC2 Customer order summary - batch step      (CASE-021)    */
+/* CORRECTED version. Builds the selection in the BATCH job's own   */
+/* QTEMP, then writes the summary row.                              */
+/*                                                                  */
+/* Parameter: &CUST  char(7)                                        */
+/* Compile:  CRTBNDCL PGM(ORDLAB/ORDSELBC2) SRCFILE(ORDLAB/QCLSRC)  */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM        PARM(&CUST)
+
+  DCL        VAR(&CUST) TYPE(*CHAR) LEN(7)
+
+  RUNSQL     SQL('CREATE TABLE QTEMP.ORDSEL AS +
+               (SELECT * FROM ORDLAB.ORDHDR WHERE CUSTNO = ' +
+               *CAT &CUST *TCAT ') WITH DATA') COMMIT(*NONE)
+
+  RUNSQL     SQL('INSERT INTO ORDLAB.CUSTSTMT +
+               SELECT CUSTNO, COUNT(*), CURRENT TIMESTAMP +
+               FROM QTEMP.ORDSEL GROUP BY CUSTNO') +
+               COMMIT(*NONE)
+
+  SNDPGMMSG  MSG('ORDSELBC2: summary written for customer ' *CAT +
+               &CUST *TCAT '.') TOPGMQ(*EXT)
+
+ENDPGM

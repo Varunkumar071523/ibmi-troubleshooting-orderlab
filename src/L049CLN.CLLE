@@ -1,0 +1,23 @@
+/* ================================================================ */
+/* L049CLN   CASE-049/050 cleanup: delete the lab spooled files,    */
+/*           both queues, the printer file and the program.         */
+/* Run CHGJOB OUTQ(*USRPRF) first if you changed your job's queue.  */
+/* Compile: CRTBNDCL PGM(ORDLAB/L049CLN) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CLROUTQ    OUTQ(ORDLAB/ORDUSRQ)
+  MONMSG     MSGID(CPF0000)
+  CLROUTQ    OUTQ(ORDLAB/ORDTSTQ)
+  MONMSG     MSGID(CPF0000)
+  DLTOUTQ    OUTQ(ORDLAB/ORDUSRQ)
+  MONMSG     MSGID(CPF0000)
+  DLTOUTQ    OUTQ(ORDLAB/ORDTSTQ)
+  MONMSG     MSGID(CPF0000)
+  DLTF       FILE(ORDLAB/ORDRPTP)
+  MONMSG     MSGID(CPF2105)
+  DLTPGM     PGM(ORDLAB/ORDRPTB)
+  MONMSG     MSGID(CPF2105)
+
+ENDPGM

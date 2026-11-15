@@ -1,0 +1,32 @@
+/* ================================================================ */
+/* ORDMEC    Month-end statement driver              (CASE-005/006) */
+/* Asks operations to confirm that all credit notes are entered     */
+/* before producing customer statements. The question is sent to    */
+/* message queue ORDOPSQ and the job waits for the reply.           */
+/*                                                                  */
+/* Needs program ORDSTMT (CASE-015) and message queue ORDOPSQ.      */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDMEC) SRCFILE(ORDLAB/QCLSRC)      */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&RPY) TYPE(*CHAR) LEN(1)
+
+  SNDUSRMSG  MSG('ORDMEC month-end: have all credit notes for +
+               the month been entered? Reply Y to produce +
+               statements or N to stop.') +
+               VALUES('Y' 'N') DFT('N') MSGTYPE(*INQ) +
+               TOMSGQ(ORDOPSQ) MSGRPY(&RPY)
+
+  IF         COND(&RPY *EQ 'N') THEN(DO)
+    SNDPGMMSG  MSG('ORDMEC: stopped - credit notes not +
+                 confirmed. No statements produced.') TOPGMQ(*EXT)
+    RETURN
+  ENDDO
+
+  CLRPFM     FILE(CUSTSTMT)
+  CALL       PGM(ORDSTMT)
+  SNDPGMMSG  MSG('ORDMEC: month-end statements produced.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

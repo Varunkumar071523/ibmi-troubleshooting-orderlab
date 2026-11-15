@@ -1,0 +1,19 @@
+/* ================================================================ */
+/* L015RUN   CASE-015: the nightly submission, as operations runs   */
+/*           it. House standard: batch jobs take their library list */
+/*           from the job description and do not inherit the       */
+/*           submitter's current library.                           */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/L015RUN) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L015RUN                                     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  SBMJOB     CMD(CALL PGM(ORDLAB/ORDSTMT)) +
+               JOB(ORDSTMT) +
+               JOBD(ORDLAB/ORDNIGHTD) +
+               INLLIBL(*JOBD) +
+               CURLIB(*CRTDFT)
+
+ENDPGM

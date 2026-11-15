@@ -1,0 +1,35 @@
+/* ================================================================ */
+/* ORDNIGHTC2 Nightly driver                         (CASE-001)     */
+/* CORRECTED version. In production this replaces ORDNIGHTC.        */
+/*                                                                  */
+/* Changes:                                                         */
+/*  1. The run mode is always written to the job log (external      */
+/*     message queue), so it is visible at any logging level.       */
+/*  2. Only 'FULL' and 'MARGIN' are accepted. Anything else ends    */
+/*     the job with an escape message instead of silently skipping. */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDNIGHTC2) SRCFILE(ORDLAB/QCLSRC)  */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&MODE) TYPE(*CHAR) LEN(10)
+
+  RTVDTAARA  DTAARA(ORDCTL *ALL) RTNVAR(&MODE)
+
+  SNDPGMMSG  MSG('ORDNIGHTC2: run mode is "' *CAT &MODE *TCAT +
+               '".') TOPGMQ(*EXT)
+
+  IF         COND(&MODE *NE 'FULL' *AND &MODE *NE 'MARGIN') +
+               THEN(SNDPGMMSG MSGID(CPF9898) MSGF(QCPFMSG) +
+               MSGDTA('ORDNIGHTC2: run mode "' *CAT &MODE *TCAT +
+               '" is not FULL or MARGIN') MSGTYPE(*ESCAPE))
+
+  IF         COND(&MODE *EQ 'FULL') THEN(DO)
+    CLRPFM     FILE(CUSTSTMT)
+    CALL       PGM(ORDSTMT)
+  ENDDO
+
+  CALL       PGM(ORDMRGB2)
+
+ENDPGM

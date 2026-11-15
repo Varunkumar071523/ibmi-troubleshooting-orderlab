@@ -1,0 +1,26 @@
+/* ================================================================ */
+/* ORDSELC   Customer order summary - menu option     (CASE-021)    */
+/* Version WITH THE DEFECT: builds the selection in QTEMP of the    */
+/* INTERACTIVE job, then submits a batch job that expects to read   */
+/* it. The batch job has its own, empty QTEMP.                      */
+/*                                                                  */
+/* Parameter: &CUST  char(7)  customer number, e.g. '5001'          */
+/* Call:     CALL ORDLAB/ORDSELC PARM('5001')                       */
+/* Compile:  CRTBNDCL PGM(ORDLAB/ORDSELC) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM        PARM(&CUST)
+
+  DCL        VAR(&CUST) TYPE(*CHAR) LEN(7)
+
+  DLTF       FILE(QTEMP/ORDSEL)
+  MONMSG     MSGID(CPF2105)
+
+  RUNSQL     SQL('CREATE TABLE QTEMP.ORDSEL AS +
+               (SELECT * FROM ORDLAB.ORDHDR WHERE CUSTNO = ' +
+               *CAT &CUST *TCAT ') WITH DATA') COMMIT(*NONE)
+
+  /* Moved to batch last month because it was "too slow" */
+  SBMJOB     CMD(CALL PGM(ORDLAB/ORDSELBC)) JOB(ORDSEL)
+
+ENDPGM

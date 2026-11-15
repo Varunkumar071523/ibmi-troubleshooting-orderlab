@@ -1,0 +1,20 @@
+/* ================================================================ */
+/* ORDINITC  Make sure the run-mode data area exists (CASE-034)     */
+/* Version WITH THE DEFECT: monitors CPF2105 - the "not found"      */
+/* message of DLTF and other delete commands - after CHKOBJ, which  */
+/* reports a missing object with CPF9801.                           */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDINITC) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CHKOBJ     OBJ(ORDLAB/ORDCTL) OBJTYPE(*DTAARA)
+  MONMSG     MSGID(CPF2105) EXEC(CRTDTAARA DTAARA(ORDLAB/ORDCTL) +
+               TYPE(*CHAR) LEN(10) VALUE('FULL') +
+               TEXT('Order Lab - nightly run mode'))
+
+  SNDPGMMSG  MSG('ORDINITC: run-mode data area is in place.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

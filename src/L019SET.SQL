@@ -1,0 +1,17 @@
+-- ===================================================================
+-- L019SET  CASE-019 setup: the quarter-end statement table.
+--          Created as an exact duplicate of CUSTSTMT so its record
+--          format (and level identifier) is the same - required for
+--          an override from CUSTSTMT to CUSTSTMTQ.
+--
+-- This script uses one CL command. Run it from a command line
+-- instead of RUNSQLSTM:
+--
+--   CRTDUPOBJ OBJ(CUSTSTMT) FROMLIB(ORDLAB) OBJTYPE(*FILE) +
+--             TOLIB(ORDLAB) NEWOBJ(CUSTSTMTQ) DATA(*NO)
+--
+-- Cleanup:  DLTF FILE(ORDLAB/CUSTSTMTQ)
+--           DLTPGM ORDLAB/ORDQTRC  DLTPGM ORDLAB/ORDQTRC2
+--           DLTPGM ORDLAB/ORDOVRC
+-- Status: written, NOT yet executed on IBM i.
+-- ===================================================================

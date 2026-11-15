@@ -1,0 +1,55 @@
+ORDER LAB — COMPANION SOURCE KIT
+IBM i Troubleshooting for Beginners
+Ankur Johari | 2026
+
+ABOUT THE KIT
+This package contains 126 plain-text source files referenced by the 51
+troubleshooting cases and Appendix D of the book. Each case explains its own
+setup, investigation and cleanup. The files are organized alphabetically.
+
+IMPORTANT: NOT YET RUNTIME-VERIFIED
+These files have undergone file inventory and packaging checks, but have
+NOT been compiled or executed on an IBM i system. Do not treat the examples
+as production-tested software. They are learning exercises, some of which
+intentionally create failures, modify sample records, or delete lab objects.
+
+BEFORE YOU BEGIN
+1. Use only a practice IBM i account where you have permission to create
+   objects in a library you control. Never run these labs against production
+   objects, a colleague's library, or shared operational data.
+2. Follow the book's 'The Order Lab' chapter, then the instructions for the
+   particular case. Review the label [CHANGES SOMETHING] before each step.
+3. The examples call the lab library ORDLAB. Substitute YOUR authorized
+   library name in the book commands and source files where appropriate.
+   Some case labs intentionally use an additional test library (ORDLABT)
+   or change job or library-list settings. Read those case-specific warnings.
+4. For the shared base, the book calls for source physical files QRPGLESRC,
+   QCLSRC, QDDSSRC and QSQLSRC, with QSQLSRC created using RCDLEN(112).
+   Transfer the program source into members of the appropriate source file
+   with the source types shown below.
+5. The basic setup is LAB000.SQL followed by LABCORE.CLLE. LABCORE uses
+   ORDSTMT.RPGLE, ORDMRGB2.RPGLE, ORDVIEW.RPGLE and ORDFMT.RPGLE.
+   Follow the exact book instructions and check compiler/job logs.
+6. Before doing a case, check the case's prerequisites and its Cleanup
+   section. LAB999.SQL removes the common lab tables at the end; it does
+   NOT replace each case's cleanup instructions.
+
+SOURCE TYPES
+  .CLLE       CL source (normally member type CLLE in QCLSRC)
+  .RPGLE      Free-format RPGLE source (QRPGLESRC)
+  .SQLRPGLE   RPG with embedded SQL (typically QRPGLESRC)
+  .SQL        SQL scripts (QSQLSRC)
+  .PF / .LF   DDS physical/logical file source (QDDSSRC)
+  .DSPF       DDS display file source (QDDSSRC)
+
+The complete list of case files is in Appendix D of the book.
+
+REDISTRIBUTION
+The book's copyright notice allows the lab source code to be copied and
+changed for personal learning. The book itself remains copyright © 2026
+Ankur Johari. Do not assume permission for other uses.
+
+PACKAGE INTEGRITY
+The original 126 source files are unmodified in this reader package.
+The added START_HERE.txt provides instructions; SOURCE_SHA256.txt lists
+SHA-256 checksums of the original source files for integrity checks.

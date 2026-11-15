@@ -1,0 +1,23 @@
+/* ================================================================ */
+/* ORDWKLC   Weekly exception archive                (CASE-033)     */
+/* Version WITH THE DEFECT: a program-level MONMSG for CPF0000,     */
+/* with no EXEC. Every CPF escape message in the program is         */
+/* ignored, and processing goes on to the next command - including  */
+/* the CLRPFM after a copy that failed.                             */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDWKLC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  MONMSG     MSGID(CPF0000)        /* "so the job never stops" */
+
+  CPYF       FROMFILE(ORDLAB/ORDEXCP) TOFILE(ORDLAB/ORDEXCPA) +
+               MBROPT(*ADD) FMTOPT(*MAP)
+
+  CLRPFM     FILE(ORDLAB/ORDEXCP)
+
+  SNDPGMMSG  MSG('ORDWKLC: weekly exception archive complete.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

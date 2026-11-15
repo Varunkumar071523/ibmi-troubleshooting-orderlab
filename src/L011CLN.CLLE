@@ -1,0 +1,15 @@
+/* ================================================================ */
+/* L011CLN   CASE-011 cleanup: remove the schedule entry and the    */
+/*           scheduler job description.                             */
+/* Compile: CRTBNDCL PGM(ORDLAB/L011CLN) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  RMVJOBSCDE JOB(ORDMARGIN)
+  MONMSG     MSGID(CPF0000)
+
+  DLTJOBD    JOBD(ORDLAB/ORDSCHD)
+  MONMSG     MSGID(CPF2105)
+
+ENDPGM

@@ -1,0 +1,42 @@
+/* ================================================================ */
+/* ORDMEC2   Month-end statement driver              (CASE-006)     */
+/* CORRECTED version. In production this replaces ORDMEC.           */
+/*                                                                  */
+/* The default reply is now 'D', which is not one of the VALUES a   */
+/* person can type. A default reply is not checked against VALUES,  */
+/* so 'D' can only mean "answered automatically". In that case the  */
+/* job ends with an escape message instead of finishing quietly.    */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDMEC2) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&RPY) TYPE(*CHAR) LEN(1)
+
+  SNDUSRMSG  MSG('ORDMEC month-end: have all credit notes for +
+               the month been entered? Reply Y to produce +
+               statements or N to stop.') +
+               VALUES('Y' 'N') DFT('D') MSGTYPE(*INQ) +
+               TOMSGQ(ORDOPSQ) MSGRPY(&RPY)
+
+  IF         COND(&RPY *EQ 'D') THEN(DO)
+    SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                 MSGDTA('ORDMEC2: month-end question was answered +
+                 automatically, not by a person. No statements +
+                 produced') MSGTYPE(*ESCAPE)
+  ENDDO
+
+  IF         COND(&RPY *EQ 'N') THEN(DO)
+    SNDPGMMSG  MSG('ORDMEC2: stopped by operator - credit notes +
+                 not confirmed. No statements produced.') +
+                 TOPGMQ(*EXT)
+    RETURN
+  ENDDO
+
+  CLRPFM     FILE(CUSTSTMT)
+  CALL       PGM(ORDSTMT)
+  SNDPGMMSG  MSG('ORDMEC2: month-end statements produced.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

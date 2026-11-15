@@ -1,0 +1,34 @@
+/* ================================================================ */
+/* L011SET   CASE-011 setup: the scheduler's job description and a  */
+/*           daily job schedule entry for the margin job.           */
+/*                                                                  */
+/* Before compiling, change SCDTIME to about 5 minutes from now    */
+/* (system time, hhmmss). The lab then holds the entry so that the  */
+/* scheduled time passes while it is held.                          */
+/*                                                                  */
+/* Needs ORDMRGB2 (CASE-004). Needs authority to use job schedule   */
+/* commands; see the lab notes in the case.                         */
+/* Compile: CRTBNDCL PGM(ORDLAB/L011SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTJOBD    JOBD(ORDLAB/ORDSCHD) +
+               JOBQ(*LIBL/QBATCH) +
+               USER(*RQD) +
+               INQMSGRPY(*DFT) +
+               LOG(4 00 *SECLVL) +
+               INLLIBL(ORDLAB QGPL QTEMP) +
+               TEXT('Order Lab - scheduled jobs')
+
+  ADDJOBSCDE JOB(ORDMARGIN) +
+               CMD(CALL PGM(ORDLAB/ORDMRGB2)) +
+               FRQ(*WEEKLY) SCDDATE(*NONE) SCDDAY(*ALL) +
+               SCDTIME('013000') +
+               JOBD(ORDLAB/ORDSCHD) +
+               TEXT('Order Lab - nightly margin calculation')
+
+  /* The cause of the case: held for a freeze, never released */
+  HLDJOBSCDE JOB(ORDMARGIN)
+
+ENDPGM

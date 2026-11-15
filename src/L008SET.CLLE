@@ -1,0 +1,22 @@
+/* ================================================================ */
+/* L008SET   CASE-008 / CASE-009 setup: an application job queue    */
+/*           and a job description that sends work to it.           */
+/*           No subsystem serves this queue - that is the case.     */
+/* Compile: CRTBNDCL PGM(ORDLAB/L008SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L008SET                                     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTJOBQ    JOBQ(ORDLAB/ORDJOBQ) +
+               TEXT('Order Lab - application job queue')
+
+  CRTJOBD    JOBD(ORDLAB/ORDBATD) +
+               JOBQ(ORDLAB/ORDJOBQ) +
+               USER(*RQD) +
+               INQMSGRPY(*RQD) +
+               LOG(4 00 *SECLVL) +
+               INLLIBL(ORDLAB QGPL QTEMP) +
+               TEXT('Order Lab - batch jobs on ORDJOBQ')
+
+ENDPGM

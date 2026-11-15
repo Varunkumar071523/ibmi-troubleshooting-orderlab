@@ -1,0 +1,24 @@
+/* ================================================================ */
+/* ORDNOTFC  Send a note to operations              (CASE-037)      */
+/* Version WITH THE DEFECT: builds a SNDMSG command as a string     */
+/* and runs it with QCMDEXC. Text containing an apostrophe          */
+/* (Customer's ...) breaks the command string.                      */
+/*                                                                  */
+/* Parameter: &TEXT char(60)                                        */
+/* Call: CALL ORDLAB/ORDNOTFC PARM('Customer''s dock closed today') */
+/* Needs message queue ORDOPSQ (CASE-005).                          */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDNOTFC) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM        PARM(&TEXT)
+
+  DCL        VAR(&TEXT) TYPE(*CHAR) LEN(60)
+  DCL        VAR(&CMD)  TYPE(*CHAR) LEN(200)
+  DCL        VAR(&LEN)  TYPE(*DEC)  LEN(15 5) VALUE(200)
+
+  CHGVAR     VAR(&CMD) VALUE('SNDMSG MSG(''' *CAT &TEXT *TCAT +
+               ''') TOMSGQ(ORDLAB/ORDOPSQ)')
+
+  CALL       PGM(QCMDEXC) PARM(&CMD &LEN)
+
+ENDPGM

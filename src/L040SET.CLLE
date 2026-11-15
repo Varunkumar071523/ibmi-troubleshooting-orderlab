@@ -1,0 +1,46 @@
+/* ================================================================ */
+/* L040SET   Load supplier receipts the unsafe way      (CASE-040)  */
+/* Creates a flat file ORDRCVF (one 19-byte field), puts four       */
+/* supplier records in it as hex, then copies them into the DDS     */
+/* file ORDRCV with FMTOPT(*NOCHK) - byte for byte, no checking.    */
+/* Record 3 (GASKET-50) has the quantity as the characters '0025'   */
+/* instead of packed decimal. Its last half-byte is 5, not a sign.  */
+/*                                                                  */
+/* Needs ORDRCV created first (ORDRCV.PF).                          */
+/* Compile: CRTBNDCL PGM(ORDLAB/L040SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&SQL) TYPE(*CHAR) LEN(200)
+  DCL        VAR(&ROW) TYPE(*CHAR) LEN(38)
+  DCL        VAR(&N)   TYPE(*DEC)  LEN(1 0)
+
+  DLTF       FILE(ORDLAB/ORDRCVF)
+  MONMSG     MSGID(CPF2105)
+  CRTPF      FILE(ORDLAB/ORDRCVF) RCDLEN(19) +
+               TEXT('Order Lab - supplier flat file')
+  CLRPFM     FILE(ORDLAB/ORDRCV)
+
+  CHGVAR     VAR(&N) VALUE(1)
+LOOP:
+  IF         COND(&N *EQ 1) THEN(CHGVAR VAR(&ROW) +
+               VALUE('C2D6D3E360D4F84040400000500F000000180F'))
+  IF         COND(&N *EQ 2) THEN(CHGVAR VAR(&ROW) +
+               VALUE('D5E4E360D4F8404040400001000F000000070F'))
+  IF         COND(&N *EQ 3) THEN(CHGVAR VAR(&ROW) +
+               VALUE('C7C1E2D2C5E360F5F040F0F0F2F5000001550F'))
+  IF         COND(&N *EQ 4) THEN(CHGVAR VAR(&ROW) +
+               VALUE('E5C1D3E5C560F2F540400000008F000033750F'))
+  CHGVAR     VAR(&SQL) VALUE('INSERT INTO ORDLAB.ORDRCVF +
+               VALUES(X''' *CAT &ROW *CAT ''')')
+  RUNSQL     SQL(&SQL) COMMIT(*NONE)
+  CHGVAR     VAR(&N) VALUE(&N + 1)
+  IF         COND(&N *LE 4) THEN(GOTO CMDLBL(LOOP))
+
+  CPYF       FROMFILE(ORDLAB/ORDRCVF) TOFILE(ORDLAB/ORDRCV) +
+               MBROPT(*REPLACE) FMTOPT(*NOCHK)
+
+  SNDPGMMSG  MSG('L040SET: 4 supplier records loaded into ORDRCV.') +
+               TOPGMQ(*EXT)
+ENDPGM

@@ -1,0 +1,21 @@
+     A* ORDMNTD  Order maintenance display file   (CASE-025)
+     A* Compile: CRTDSPF FILE(ORDLAB/ORDMNTD) SRCFILE(ORDLAB/QDDSSRC)
+     A* Status: written, NOT yet compiled on IBM i.
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CA03(03 'Exit')
+     A                                      CA12(12 'Cancel')
+     A          R ORDKEY
+     A                                  1 30'Order Maintenance'
+     A                                  3  2'Order number . . :'
+     A            KORDNO         9Y 0B  3 21
+     A            SMSG          60A  O 22  2
+     A                                 23  2'F3=Exit'
+     A          R ORDEDT
+     A                                  1 30'Order Maintenance'
+     A                                  3  2'Order number . . :'
+     A            SORDNO         9Y 0O  3 21
+     A                                  4  2'Status (O/P/S) . :'
+     A            SORDSTS        1A  B  4 21VALUES('O' 'P' 'S')
+     A                                  5  2'Note . . . . . . :'
+     A            SNOTE         40A  B  5 21
+     A                                 23  2'F3=Exit  F12=Cancel  Enter=Save'

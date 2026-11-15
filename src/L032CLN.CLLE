@@ -1,0 +1,28 @@
+/* ================================================================ */
+/* L032CLN   CASE-032 cleanup: stop journaling, remove the table,   */
+/*           the journal, its receiver and the case programs.       */
+/* Compile: CRTBNDCL PGM(ORDLAB/L032CLN) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  ENDJRNPF   FILE(ORDLAB/ITEMPRC)
+  MONMSG     MSGID(CPF0000)
+
+  DLTF       FILE(ORDLAB/ITEMPRC)
+  MONMSG     MSGID(CPF2105)
+
+  DLTJRN     JRN(ORDLAB/ORDJRN)
+  MONMSG     MSGID(CPF0000)
+
+  DLTJRNRCV  JRNRCV(ORDLAB/ORDRCV0001) DLTOPT(*IGNINQMSG)
+  MONMSG     MSGID(CPF0000)
+
+  DLTPGM     PGM(ORDLAB/ORDPRUP)
+  MONMSG     MSGID(CPF2105)
+  DLTPGM     PGM(ORDLAB/ORDPRCC)
+  MONMSG     MSGID(CPF2105)
+  DLTPGM     PGM(ORDLAB/ORDPRCC2)
+  MONMSG     MSGID(CPF2105)
+
+ENDPGM

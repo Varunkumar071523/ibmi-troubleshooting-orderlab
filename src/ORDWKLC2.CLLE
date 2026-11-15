@@ -1,0 +1,27 @@
+/* ================================================================ */
+/* ORDWKLC2  Weekly exception archive                (CASE-033)     */
+/* CORRECTED version. In production this replaces ORDWKLC.          */
+/*                                                                  */
+/* No program-level MONMSG. The one normal condition - nothing to   */
+/* archive - is monitored on the CPYF itself (as in CASE-002). Any  */
+/* other copy error stops the program BEFORE the clear.             */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDWKLC2) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CPYF       FROMFILE(ORDLAB/ORDEXCP) TOFILE(ORDLAB/ORDEXCPA) +
+               MBROPT(*ADD) FMTOPT(*MAP)
+  MONMSG     MSGID(CPF2817) CMPDTA(CPF2869) EXEC(DO)
+    SNDPGMMSG  MSG('ORDWKLC2: no exceptions to archive this week.') +
+                 TOPGMQ(*EXT)
+    RETURN
+  ENDDO
+
+  CLRPFM     FILE(ORDLAB/ORDEXCP)
+
+  SNDPGMMSG  MSG('ORDWKLC2: weekly exception archive complete.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

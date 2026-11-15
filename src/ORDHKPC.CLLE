@@ -1,0 +1,17 @@
+/* ================================================================ */
+/* ORDHKPC   Weekly housekeeping                     (CASE-018)     */
+/* Version WITH THE DEFECT: the library is hard-coded, so the       */
+/* program clears the PRODUCTION exception log whatever library     */
+/* list the job has - including a test job's.                       */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDHKPC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  /* Exceptions are copied to the weekly archive before this runs */
+  CLRPFM     FILE(ORDLAB/ORDEXCP)
+
+  SNDPGMMSG  MSG('ORDHKPC: exception log cleared.') TOPGMQ(*EXT)
+
+ENDPGM

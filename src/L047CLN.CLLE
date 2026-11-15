@@ -1,0 +1,30 @@
+/* ================================================================ */
+/* L047CLN   CASE-047 cleanup: stop journaling ORDHDR, delete the   */
+/*           journal and receiver, put the lab note back, and       */
+/*           delete the case programs.                              */
+/* Sign off (or end) the session that ran ORDNOTS first, so that    */
+/* nothing still holds ORDHDR under commitment control.             */
+/* Compile: CRTBNDCL PGM(ORDLAB/L047CLN) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  ENDJRNPF   FILE(ORDLAB/ORDHDR)
+  MONMSG     MSGID(CPF0000)
+
+  DLTJRN     JRN(ORDLAB/ORDJRN)
+  MONMSG     MSGID(CPF0000)
+
+  DLTJRNRCV  JRNRCV(ORDLAB/ORDRCV0001) DLTOPT(*IGNINQMSG)
+  MONMSG     MSGID(CPF0000)
+
+  RUNSQL     SQL('UPDATE ORDLAB.ORDHDR SET NOTE = '' '' +
+               WHERE ORDNO = 100102') COMMIT(*NONE)
+  MONMSG     MSGID(CPF0000)
+
+  DLTPGM     PGM(ORDLAB/ORDNOTS)
+  MONMSG     MSGID(CPF2105)
+  DLTPGM     PGM(ORDLAB/ORDNOTS2)
+  MONMSG     MSGID(CPF2105)
+
+ENDPGM

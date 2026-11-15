@@ -1,0 +1,22 @@
+/* ================================================================ */
+/* ORDSTSUC  Driver for the pick-status update       (CASE-027)     */
+/* Calls ORDSTSU (or ORDSTSU2) for order 100102.                    */
+/*                                                                  */
+/* LAB ONLY: shortens the record wait to 10 seconds with a          */
+/* job-scoped override, as ORDSTSC does in CASE-025.                */
+/* Parameter: &PGM char(10) - 'ORDSTSU' or 'ORDSTSU2'               */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDSTSUC) SRCFILE(ORDLAB/QCLSRC)    */
+/* Submit:  SBMJOB CMD(CALL PGM(ORDLAB/ORDSTSUC) PARM('ORDSTSU'))   */
+/*            JOB(ORDSTSU)                                          */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM        PARM(&PGM)
+
+  DCL        VAR(&PGM) TYPE(*CHAR) LEN(10)
+  DCL        VAR(&ORD) TYPE(*DEC)  LEN(9 0) VALUE(100102)
+
+  OVRDBF     FILE(ORDHDRI1) WAITRCD(10) OVRSCOPE(*JOB)
+  CALL       PGM(&PGM) PARM(&ORD)
+  DLTOVR     FILE(ORDHDRI1) LVL(*JOB)
+
+ENDPGM

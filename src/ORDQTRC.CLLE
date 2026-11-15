@@ -1,0 +1,21 @@
+/* ================================================================ */
+/* ORDQTRC   Quarter-end statement driver            (CASE-019)     */
+/* Version WITH THE DEFECT: relies on ORDOVRC to redirect CUSTSTMT  */
+/* to CUSTSTMTQ, but that override has gone by the time ORDSTMT     */
+/* opens the file. The quarter-end rows land in the daily table.    */
+/*                                                                  */
+/* Needs ORDSTMT (CASE-015 lab).                                    */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDQTRC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CALL       PGM(ORDOVRC)          /* set up quarter-end files */
+
+  CLRPFM     FILE(ORDLAB/CUSTSTMTQ)
+  CALL       PGM(ORDSTMT)
+
+  SNDPGMMSG  MSG('ORDQTRC: quarter-end statements produced.') +
+               TOPGMQ(*EXT)
+
+ENDPGM

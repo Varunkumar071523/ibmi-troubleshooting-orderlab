@@ -1,0 +1,23 @@
+/* ================================================================ */
+/* ORDPOSTC  Driver for invoice posting               (CASE-014)    */
+/* Calls ORDPOST and ends the job with an escape message if the     */
+/* posting program reports that it stopped.                         */
+/* ORDPOSTC2 is the same driver calling the corrected ORDPOST2.     */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDPOSTC) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&OK) TYPE(*CHAR) LEN(1)
+
+  CALL       PGM(ORDPOST) PARM(&OK)
+
+  IF         COND(&OK *NE 'Y') THEN(SNDPGMMSG MSGID(CPF9898) +
+               MSGF(QCPFMSG) MSGDTA('Invoice posting stopped. +
+               See ORDEXCP for the order and SQLCODE') +
+               MSGTYPE(*ESCAPE))
+
+  SNDPGMMSG  MSG('Invoice posting completed.') TOPGMQ(*EXT)
+
+ENDPGM

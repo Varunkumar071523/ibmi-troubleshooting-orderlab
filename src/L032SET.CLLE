@@ -1,0 +1,31 @@
+/* ================================================================ */
+/* L032SET   CASE-032 setup: an item price table, journaled so it   */
+/*           can be used under commitment control.                  */
+/*                                                                  */
+/* Needs authority to create a journal and journal receiver in your */
+/* library. If your system refuses, see the case's lab notes.       */
+/* Compile: CRTBNDCL PGM(ORDLAB/L032SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L032SET                                     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  RUNSQL     SQL('CREATE TABLE ORDLAB.ITEMPRC ( +
+               ITEMNO CHAR(10) NOT NULL, +
+               PRICE  DECIMAL(9, 2) NOT NULL, +
+               PRIMARY KEY (ITEMNO)) RCDFMT ITEMPRCR') +
+               COMMIT(*NONE)
+
+  RUNSQL     SQL('INSERT INTO ORDLAB.ITEMPRC VALUES +
+               (''BOLT-M8'', 2.50), (''NUT-M8'', 1.20), +
+               (''GASKET-50'', 20.00), (''VALVE-25'', 450.00), +
+               (''PUMP-HX2'', 9500.00)') COMMIT(*NONE)
+
+  CRTJRNRCV  JRNRCV(ORDLAB/ORDRCV0001) +
+               TEXT('Order Lab - journal receiver')
+  CRTJRN     JRN(ORDLAB/ORDJRN) JRNRCV(ORDLAB/ORDRCV0001) +
+               TEXT('Order Lab - journal')
+  STRJRNPF   FILE(ORDLAB/ITEMPRC) JRN(ORDLAB/ORDJRN) +
+               IMAGES(*BOTH)
+
+ENDPGM

@@ -1,0 +1,27 @@
+/* ================================================================ */
+/* ORDHSTM   Month-start: add this month's archive member           */
+/*                                                   (CASE-020)     */
+/* Member name: 'M' + YYMM of the job date, e.g. M2611.             */
+/* This is the existing job, unchanged for years.                   */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDHSTM) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&JOBDATE) TYPE(*CHAR) LEN(6)
+  DCL        VAR(&YMD)     TYPE(*CHAR) LEN(6)
+  DCL        VAR(&MBR)     TYPE(*CHAR) LEN(10)
+
+  RTVJOBA    DATE(&JOBDATE)
+  CVTDAT     DATE(&JOBDATE) TOVAR(&YMD) FROMFMT(*JOB) +
+               TOFMT(*YMD) TOSEP(*NONE)
+  CHGVAR     VAR(&MBR) VALUE('M' *CAT %SST(&YMD 1 4))
+
+  ADDPFM     FILE(ORDLAB/ORDHIST) MBR(&MBR) +
+               TEXT('Order archive for month')
+
+  SNDPGMMSG  MSG('ORDHSTM: added archive member ' *CAT &MBR +
+               *TCAT '.') TOPGMQ(*EXT)
+
+ENDPGM

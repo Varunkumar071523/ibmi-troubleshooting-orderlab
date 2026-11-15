@@ -1,0 +1,50 @@
+/* ================================================================ */
+/* ORDNIGHTC4 Nightly driver with an error handler    (CASE-035)    */
+/* CORRECTED version. In production this replaces ORDNIGHTC3.       */
+/*                                                                  */
+/* The handler receives the message that caused the jump, passes    */
+/* its ID and text to operations, resends it to the caller as a     */
+/* diagnostic, then ends the job with an escape that names it.      */
+/* A flag stops the handler from looping if it fails itself.        */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDNIGHTC4) SRCFILE(ORDLAB/QCLSRC)  */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&INERR)   TYPE(*LGL)
+  DCL        VAR(&MSGID)   TYPE(*CHAR) LEN(7)
+  DCL        VAR(&MSG)     TYPE(*CHAR) LEN(256)
+  DCL        VAR(&MSGDTA)  TYPE(*CHAR) LEN(256)
+  DCL        VAR(&MSGF)    TYPE(*CHAR) LEN(10)
+  DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+
+  MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERROR))
+
+  CLRPFM     FILE(ORDLAB/CUSTSTMT)
+  CALL       PGM(ORDSTMT)
+
+  SNDPGMMSG  MSG('ORDNIGHTC4: nightly statements produced.') +
+               TOPGMQ(*EXT)
+  RETURN
+
+ERROR:
+  IF         COND(&INERR) THEN(RETURN)    /* handler failed */
+  CHGVAR     VAR(&INERR) VALUE('1')
+
+  RCVMSG     MSGTYPE(*EXCP) RMV(*NO) MSG(&MSG) MSGDTA(&MSGDTA) +
+               MSGID(&MSGID) MSGF(&MSGF) MSGFLIB(&MSGFLIB)
+
+  SNDMSG     MSG('ORDNIGHTC4 failed with ' *CAT &MSGID *CAT ': ' +
+               *CAT &MSG) TOMSGQ(ORDLAB/ORDOPSQ)
+
+  IF         COND(&MSGID *NE ' ') THEN(SNDPGMMSG MSGID(&MSGID) +
+               MSGF(&MSGFLIB/&MSGF) MSGDTA(&MSGDTA) +
+               MSGTYPE(*DIAG))
+
+  SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+               MSGDTA('ORDNIGHTC4 failed with ' *CAT &MSGID *TCAT +
+               ' - see the diagnostic message above') +
+               MSGTYPE(*ESCAPE)
+
+ENDPGM

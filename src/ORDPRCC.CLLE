@@ -1,0 +1,22 @@
+/* ================================================================ */
+/* ORDPRCC   Price increase driver                   (CASE-032)     */
+/* Version WITH THE DEFECT: the COMMIT was removed in a tidy-up     */
+/* ("ENDCMTCTL ends the transaction anyway"). In a batch job,       */
+/* ENDCMTCTL with pending changes rolls them back.                  */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDPRCC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Submit:  SBMJOB CMD(CALL PGM(ORDLAB/ORDPRCC)) JOB(ORDPRC)        */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  STRCMTCTL  LCKLVL(*CHG) CMTSCOPE(*JOB)
+
+  CALL       PGM(ORDPRUP)
+
+  ENDCMTCTL
+
+  SNDPGMMSG  MSG('ORDPRCC: price increase run completed.') +
+               TOPGMQ(*EXT)
+
+ENDPGM
