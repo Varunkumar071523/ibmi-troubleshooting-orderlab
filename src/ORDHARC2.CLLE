@@ -1,0 +1,45 @@
+/* ================================================================ */
+/* ORDHARC2  Nightly archive driver                  (CASE-020)     */
+/* CORRECTED version. In production this replaces ORDHARC.          */
+/*                                                                  */
+/* Changes:                                                         */
+/*  1. Member name built exactly as ORDHSTM builds it: 'M' + YYMM.  */
+/*  2. The member is checked BEFORE the override. If it is missing, */
+/*     the job ends with a message naming the member, instead of a  */
+/*     file open error inside the RPG program.                      */
+/*  3. The override is deleted even if ORDHARB fails.               */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDHARC2) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&JOBDATE) TYPE(*CHAR) LEN(6)
+  DCL        VAR(&YMD)     TYPE(*CHAR) LEN(6)
+  DCL        VAR(&MBR)     TYPE(*CHAR) LEN(10)
+
+  RTVJOBA    DATE(&JOBDATE)
+  CVTDAT     DATE(&JOBDATE) TOVAR(&YMD) FROMFMT(*JOB) +
+               TOFMT(*YMD) TOSEP(*NONE)
+  CHGVAR     VAR(&MBR) VALUE('M' *CAT %SST(&YMD 1 4))
+
+  CHKOBJ     OBJ(ORDHIST) OBJTYPE(*FILE) MBR(&MBR)
+  MONMSG     MSGID(CPF9815) EXEC(SNDPGMMSG MSGID(CPF9898) +
+               MSGF(QCPFMSG) MSGDTA('ORDHARC2: archive member ' +
+               *CAT &MBR *TCAT ' does not exist. Has the +
+               month-start job ORDHSTM run?') MSGTYPE(*ESCAPE))
+
+  OVRDBF     FILE(ORDHIST) MBR(&MBR) OVRSCOPE(*JOB)
+  CALL       PGM(ORDHARB)
+  MONMSG     MSGID(CPF0000 RNX0000 MCH0000) EXEC(DO)
+    DLTOVR     FILE(ORDHIST) LVL(*JOB)
+    SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                 MSGDTA('ORDHARC2: ORDHARB failed; see the +
+                 messages above') MSGTYPE(*ESCAPE)
+  ENDDO
+  DLTOVR     FILE(ORDHIST) LVL(*JOB)
+
+  SNDPGMMSG  MSG('ORDHARC2: archived into member ' *CAT &MBR +
+               *TCAT '.') TOPGMQ(*EXT)
+
+ENDPGM

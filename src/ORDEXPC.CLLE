@@ -1,0 +1,23 @@
+/* ================================================================ */
+/* ORDEXPC   Export the customer list as CSV           (CASE-051)   */
+/* Parameter: &DIR - the directory to write custlist.csv into,      */
+/*            e.g. '/home/YOURUSER/ordexp/csv'                      */
+/* The program itself is correct. CASE-051 is about the authority   */
+/* needed on every directory on the way to &DIR.                    */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDEXPC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM        PARM(&DIR)
+
+  DCL        VAR(&DIR)  TYPE(*CHAR) LEN(100)
+  DCL        VAR(&STMF) TYPE(*CHAR) LEN(120)
+
+  CHGVAR     VAR(&STMF) VALUE(&DIR *TCAT '/custlist.csv')
+
+  CPYTOIMPF  FROMFILE(ORDLAB/CUSTMAST) TOSTMF(&STMF) +
+               MBROPT(*REPLACE) STMFCCSID(1208) RCDDLM(*CRLF) +
+               DTAFMT(*DLM) FLDDLM(',')
+
+  SNDPGMMSG  MSG('ORDEXPC: written ' *CAT &STMF) TOPGMQ(*EXT)
+ENDPGM

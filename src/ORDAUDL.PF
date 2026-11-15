@@ -1,0 +1,10 @@
+     A* ORDAUDL  Order audit log                     (CASE-029)
+     A* Created with CRTPF defaults in the story (SIZE 10000 1000 3).
+     A* Lab:  CRTPF FILE(ORDLAB/ORDAUDL) SRCFILE(ORDLAB/QDDSSRC)
+     A*         SIZE(10 2 1)
+     A* Status: written, NOT yet compiled on IBM i.
+     A          R ORDAUDLR                  TEXT('Order audit record')
+     A            AUDTS           Z         TEXT('When')
+     A            AUDPGM        10A         TEXT('Program')
+     A            ORDNO          9P 0       TEXT('Order number')
+     A            ACTION        10A         TEXT('Action')

@@ -1,0 +1,22 @@
+/* ================================================================ */
+/* L003SET   CASE-003 setup: a job description whose job logs are   */
+/*           left pending instead of being spooled.                 */
+/* Compile: CRTBNDCL PGM(ORDLAB/L003SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L003SET                                     */
+/* Change JOBQ if your system needs a different queue for user      */
+/* batch work, and record which one you used.                       */
+/* Cleanup: DLTJOBD JOBD(ORDLAB/ORDLOGD)                            */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTJOBD    JOBD(ORDLAB/ORDLOGD) +
+               JOBQ(*LIBL/QBATCH) +
+               USER(*RQD) +
+               INQMSGRPY(*DFT) +
+               LOG(4 00 *SECLVL) +
+               LOGOUTPUT(*PND) +
+               INLLIBL(ORDLAB QGPL QTEMP) +
+               TEXT('Order Lab - batch, job logs left pending')
+
+ENDPGM

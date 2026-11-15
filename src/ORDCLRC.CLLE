@@ -1,0 +1,16 @@
+/* ================================================================ */
+/* ORDCLRC   Clear the statement table               (CASE-026)     */
+/* The clear step of the nightly driver, on its own, as it was.     */
+/* If another job has CUSTSTMT open, CLRPFM fails and nothing       */
+/* monitors it.                                                     */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDCLRC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CLRPFM     FILE(ORDLAB/CUSTSTMT)
+
+  SNDPGMMSG  MSG('ORDCLRC: CUSTSTMT cleared.') TOPGMQ(*EXT)
+
+ENDPGM

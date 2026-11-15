@@ -1,0 +1,33 @@
+/* ================================================================ */
+/* L007SET   CASE-007 setup: the application message file, one      */
+/*           message description, and an order header with no lines */
+/* Compile: CRTBNDCL PGM(ORDLAB/L007SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L007SET                                     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTMSGF    MSGF(ORDLAB/ORDMSGF) +
+               TEXT('Order Lab - application messages')
+
+  /* Terse first-level text, as the original developer wrote it.  */
+  /* The explanation is only in the second-level (help) text.     */
+  ADDMSGD    MSGID(ORD0103) MSGF(ORDLAB/ORDMSGF) +
+               MSG('Validation failed: code 03 for &1.') +
+               SECLVL('&N Cause . . . . . :   Order &1 has a +
+               header record but no order lines. This usually +
+               means order entry was interrupted before the first +
+               line was saved. +
+               &N Recovery  . . . :   Check the order in order +
+               entry. Complete it or delete it through order +
+               entry, then run validation again. Do not delete +
+               the header record directly.') +
+               SEV(30) FMT((*CHAR 9))
+
+  /* The data condition: an order header without lines */
+  RUNSQL     SQL('INSERT INTO ORDLAB.ORDHDR +
+               (ORDNO, CUSTNO, ORDDATE, ORDSTS) +
+               VALUES(100107, 5003, ''2026-11-05'', ''O'')') +
+               COMMIT(*NONE)
+
+ENDPGM

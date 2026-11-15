@@ -1,0 +1,18 @@
+/* ================================================================ */
+/* L001CLN   CASE-001 cleanup: remove the data area and drivers.    */
+/* Leaves ORDSTMT and ORDMRGB2 for their own cases' cleanup.        */
+/* Compile: CRTBNDCL PGM(ORDLAB/L001CLN) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DLTDTAARA  DTAARA(ORDLAB/ORDCTL)
+  MONMSG     MSGID(CPF2105)
+
+  DLTPGM     PGM(ORDLAB/ORDNIGHTC)
+  MONMSG     MSGID(CPF2105)
+
+  DLTPGM     PGM(ORDLAB/ORDNIGHTC2)
+  MONMSG     MSGID(CPF2105)
+
+ENDPGM

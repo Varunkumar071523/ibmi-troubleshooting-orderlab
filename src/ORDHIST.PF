@@ -1,0 +1,10 @@
+     A* ORDHIST  Monthly order archive, one member per month
+     A*          (CASE-020)
+     A* Compile: CRTPF FILE(ORDLAB/ORDHIST) SRCFILE(ORDLAB/QDDSSRC)
+     A*            MBR(*NONE) MAXMBRS(*NOMAX)
+     A* Status: written, NOT yet compiled on IBM i.
+     A          R ORDHISTR                  TEXT('Order archive')
+     A            ORDNO          9P 0       TEXT('Order number')
+     A            CUSTNO         7P 0       TEXT('Customer number')
+     A            ORDSTS         1A         TEXT('Order status')
+     A            ARCDATE         L         TEXT('Archive date')

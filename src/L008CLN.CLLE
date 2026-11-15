@@ -1,0 +1,20 @@
+/* ================================================================ */
+/* L008CLN   CASE-008 / CASE-009 cleanup.                           */
+/* Ends any of your jobs still waiting on ORDJOBQ, then deletes     */
+/* the queue and the job description.                               */
+/* Compile: CRTBNDCL PGM(ORDLAB/L008CLN) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  /* Removes every job waiting on the lab queue (lab only!) */
+  CLRJOBQ    JOBQ(ORDLAB/ORDJOBQ)
+  MONMSG     MSGID(CPF0000)
+
+  DLTJOBQ    JOBQ(ORDLAB/ORDJOBQ)
+  MONMSG     MSGID(CPF0000)
+
+  DLTJOBD    JOBD(ORDLAB/ORDBATD)
+  MONMSG     MSGID(CPF2105)
+
+ENDPGM

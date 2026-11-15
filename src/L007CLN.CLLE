@@ -1,0 +1,21 @@
+/* ================================================================ */
+/* L007CLN   CASE-007 cleanup: remove the order header without      */
+/*           lines, the message file and the case programs.         */
+/* Compile: CRTBNDCL PGM(ORDLAB/L007CLN) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  RUNSQL     SQL('DELETE FROM ORDLAB.ORDHDR WHERE ORDNO = 100107') +
+               COMMIT(*NONE)
+
+  DLTMSGF    MSGF(ORDLAB/ORDMSGF)
+  MONMSG     MSGID(CPF2105)
+
+  DLTPGM     PGM(ORDLAB/ORDVALB)
+  MONMSG     MSGID(CPF2105)
+
+  DLTPGM     PGM(ORDLAB/ORDVALC)
+  MONMSG     MSGID(CPF2105)
+
+ENDPGM

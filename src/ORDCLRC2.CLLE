@@ -1,0 +1,27 @@
+/* ================================================================ */
+/* ORDCLRC2  Clear the statement table safely        (CASE-026)     */
+/* CORRECTED clear step for the nightly driver.                     */
+/*                                                                  */
+/* Asks for an exclusive lock first, waiting up to 5 minutes. If    */
+/* another job still has the file, the job ends with a message      */
+/* that says so - before anything is changed - instead of failing   */
+/* inside CLRPFM.                                                   */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDCLRC2) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  ALCOBJ     OBJ((ORDLAB/CUSTSTMT *FILE *EXCL)) WAIT(300)
+  MONMSG     MSGID(CPF1002) EXEC(SNDPGMMSG MSGID(CPF9898) +
+               MSGF(QCPFMSG) MSGDTA('ORDCLRC2: CUSTSTMT is in use +
+               by another job. Use WRKOBJLCK OBJ(ORDLAB/CUSTSTMT) +
+               OBJTYPE(*FILE) to find it') MSGTYPE(*ESCAPE))
+
+  CLRPFM     FILE(ORDLAB/CUSTSTMT)
+
+  DLCOBJ     OBJ((ORDLAB/CUSTSTMT *FILE *EXCL))
+
+  SNDPGMMSG  MSG('ORDCLRC2: CUSTSTMT cleared.') TOPGMQ(*EXT)
+
+ENDPGM

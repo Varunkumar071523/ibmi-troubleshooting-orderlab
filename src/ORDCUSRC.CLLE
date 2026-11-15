@@ -1,0 +1,22 @@
+/* ================================================================ */
+/* ORDCUSRC  Customer summary request                (CASE-036)     */
+/* Version WITH THE DEFECT. The direct CALL works. The SBMJOB -     */
+/* added last week to move the work to batch - does not: SBMJOB     */
+/* turns the CALL into a command string, so &CUST arrives as a      */
+/* numeric constant, packed (15, 5), not as packed (7, 0).          */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDCUSRC) SRCFILE(ORDLAB/QCLSRC)    */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&CUST) TYPE(*DEC) LEN(7 0) VALUE(5001)
+
+  /* Old way - interactive, works */
+  CALL       PGM(ORDCUSRB) PARM(&CUST)
+
+  /* New way - batch, fails in the submitted job */
+  SBMJOB     CMD(CALL PGM(ORDLAB/ORDCUSRB) PARM(&CUST)) +
+               JOB(ORDCUSR)
+
+ENDPGM

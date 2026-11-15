@@ -1,0 +1,16 @@
+/* ================================================================ */
+/* L001SET   CASE-001 setup: create the run-mode data area, then    */
+/*           change it the way the (fictional) operator did.        */
+/* Compile: CRTBNDCL PGM(ORDLAB/L001SET) SRCFILE(ORDLAB/QCLSRC)     */
+/* Run:     CALL ORDLAB/L001SET                                     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTDTAARA  DTAARA(ORDLAB/ORDCTL) TYPE(*CHAR) LEN(10) +
+               VALUE('FULL') TEXT('Order Lab - nightly run mode')
+
+  /* The change that causes the case: mixed case typed by hand */
+  CHGDTAARA  DTAARA(ORDLAB/ORDCTL *ALL) VALUE('Full')
+
+ENDPGM

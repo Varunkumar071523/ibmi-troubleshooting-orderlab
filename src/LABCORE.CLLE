@@ -1,0 +1,60 @@
+/* ================================================================ */
+/* LABCORE   Build the Order Lab core kit                           */
+/* Run once, after LAB000, to create the objects that several       */
+/* cases reuse:                                                     */
+/*   ORDOPSQ   message queue for operations   (CASE-005, 006, 012,  */
+/*             035, 037)                                            */
+/*   ORDSTMT   customer statement program     (CASE-001, 005, 006,  */
+/*             015, 016, 019, 023, 035, 038)                        */
+/*   ORDMRGB2  margin program, corrected      (CASE-001, 004, 011)  */
+/*   ORDVIEW   holds CUSTSTMT open            (CASE-026, 035)       */
+/*   ORDFMT    formatting service program     (CASE-017, 039)       */
+/*                                                                  */
+/* Before running: copy ORDSTMT.RPGLE, ORDMRGB2.RPGLE, ORDVIEW.RPGLE */
+/* and ORDFMT.RPGLE into ORDLAB/QRPGLESRC (type RPGLE), and put     */
+/* ORDLAB in your library list.                                     */
+/* Each step reports its own failure; the rest still run.           */
+/* Compile: CRTBNDCL PGM(ORDLAB/LABCORE) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  CRTMSGQ    MSGQ(ORDLAB/ORDOPSQ) TEXT('Order Lab - operations')
+  MONMSG     MSGID(CPF0000) EXEC(SNDPGMMSG +
+               MSG('LABCORE: ORDOPSQ not created - exists?') +
+               TOPGMQ(*EXT))
+
+  CRTBNDRPG  PGM(ORDLAB/ORDSTMT) SRCFILE(ORDLAB/QRPGLESRC) +
+               DBGVIEW(*SOURCE)
+  MONMSG     MSGID(CPF0000) EXEC(SNDPGMMSG +
+               MSG('LABCORE: ORDSTMT not created - see listing') +
+               TOPGMQ(*EXT))
+
+  CRTBNDRPG  PGM(ORDLAB/ORDMRGB2) SRCFILE(ORDLAB/QRPGLESRC) +
+               DBGVIEW(*SOURCE)
+  MONMSG     MSGID(CPF0000) EXEC(SNDPGMMSG +
+               MSG('LABCORE: ORDMRGB2 not created - see listing') +
+               TOPGMQ(*EXT))
+
+  CRTBNDRPG  PGM(ORDLAB/ORDVIEW) SRCFILE(ORDLAB/QRPGLESRC) +
+               DBGVIEW(*SOURCE)
+  MONMSG     MSGID(CPF0000) EXEC(SNDPGMMSG +
+               MSG('LABCORE: ORDVIEW not created - see listing') +
+               TOPGMQ(*EXT))
+
+  CRTRPGMOD  MODULE(ORDLAB/ORDFMT) SRCFILE(ORDLAB/QRPGLESRC)
+  MONMSG     MSGID(CPF0000) EXEC(DO)
+    SNDPGMMSG  MSG('LABCORE: ORDFMT module not created') +
+                 TOPGMQ(*EXT)
+    GOTO       CMDLBL(DONE)
+  ENDDO
+  CRTSRVPGM  SRVPGM(ORDLAB/ORDFMT) MODULE(ORDLAB/ORDFMT) +
+               EXPORT(*ALL)
+  MONMSG     MSGID(CPF0000) EXEC(SNDPGMMSG +
+               MSG('LABCORE: ORDFMT service program not created') +
+               TOPGMQ(*EXT))
+
+DONE:
+  SNDPGMMSG  MSG('LABCORE: finished - check the messages above.') +
+               TOPGMQ(*EXT)
+ENDPGM

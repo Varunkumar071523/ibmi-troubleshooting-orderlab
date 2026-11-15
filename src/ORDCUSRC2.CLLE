@@ -1,0 +1,25 @@
+/* ================================================================ */
+/* ORDCUSRC2 Customer summary request                (CASE-036)     */
+/* CORRECTED version. In production this replaces ORDCUSRC.         */
+/*                                                                  */
+/* Passes the customer number as character. CHGVAR from *DEC (7 0)  */
+/* to *CHAR gives the digits with leading zeros, e.g. '0005001'.    */
+/* &OK fills ORDCUSRB2's second parameter; a submitted job cannot   */
+/* hand a value back, so the result is checked in CUSTSTMT and the  */
+/* batch job log instead.                                           */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDCUSRC2) SRCFILE(ORDLAB/QCLSRC)   */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&CUST)  TYPE(*DEC)  LEN(7 0) VALUE(5001)
+  DCL        VAR(&CUSTC) TYPE(*CHAR) LEN(7)
+  DCL        VAR(&OK)    TYPE(*CHAR) LEN(1)
+
+  CHGVAR     VAR(&CUSTC) VALUE(&CUST)
+
+  SBMJOB     CMD(CALL PGM(ORDLAB/ORDCUSRB2) PARM(&CUSTC &OK)) +
+               JOB(ORDCUSR)
+
+ENDPGM

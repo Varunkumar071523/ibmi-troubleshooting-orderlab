@@ -1,0 +1,26 @@
+/* ================================================================ */
+/* ORDHARC   Nightly archive driver                  (CASE-020)     */
+/* Version WITH THE DEFECT: new program, written in October. It     */
+/* builds the member name as 'M' + MMYY (e.g. M1126). The existing  */
+/* month-start job creates 'M' + YYMM (e.g. M2611).                 */
+/*                                                                  */
+/* Compile: CRTBNDCL PGM(ORDLAB/ORDHARC) SRCFILE(ORDLAB/QCLSRC)     */
+/* Status: written, NOT yet compiled or executed on IBM i.          */
+/* ================================================================ */
+PGM
+
+  DCL        VAR(&JOBDATE) TYPE(*CHAR) LEN(6)
+  DCL        VAR(&MDY)     TYPE(*CHAR) LEN(6)
+  DCL        VAR(&MBR)     TYPE(*CHAR) LEN(10)
+
+  RTVJOBA    DATE(&JOBDATE)
+  CVTDAT     DATE(&JOBDATE) TOVAR(&MDY) FROMFMT(*JOB) +
+               TOFMT(*MDY) TOSEP(*NONE)
+  CHGVAR     VAR(&MBR) VALUE('M' *CAT %SST(&MDY 1 2) *CAT +
+               %SST(&MDY 5 2))
+
+  OVRDBF     FILE(ORDHIST) MBR(&MBR) OVRSCOPE(*JOB)
+  CALL       PGM(ORDHARB)
+  DLTOVR     FILE(ORDHIST) LVL(*JOB)
+
+ENDPGM
